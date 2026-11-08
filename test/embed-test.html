@@ -1,0 +1,18 @@
+<!doctype html>
+<!-- Local test: simulates the Squarespace embed at phone width.
+     Run `python3 -m http.server` in the project folder, then open
+     http://localhost:8000/test/embed-test.html -->
+<html><body style="margin:0;background:#ddd;font-family:sans-serif">
+<div style="width:390px;background:#fff">
+  <iframe id="ccs-staff-portal" src="../?embed=1#handbook" style="width:100%;height:1400px;border:0;display:block"></iframe>
+</div>
+<p id="h">height: ?</p>
+<script>
+  window.addEventListener("message", function (e) {
+    if (e.data && e.data.ccsPortalHeight) {
+      document.getElementById("ccs-staff-portal").style.height = e.data.ccsPortalHeight + "px";
+      document.getElementById("h").textContent = "height: " + e.data.ccsPortalHeight;
+    }
+  });
+</script>
+</body></html>

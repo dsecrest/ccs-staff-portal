@@ -1,0 +1,21 @@
+<!--
+  Paste this into a Squarespace "Code" block on the page where the portal
+  should appear.
+
+  Optional: show just one section on a page by adding &only=apply
+  (or recommend, documents, handbook) to the src URL.
+-->
+<iframe id="ccs-staff-portal"
+        src="https://dsecrest.github.io/ccs-staff-portal/?embed=1"
+        title="Christian Center School Staff Portal"
+        style="width:100%;height:1400px;border:0;display:block"
+        allow="clipboard-write"></iframe>
+<script>
+  // Grows the frame to fit the form so there's no inner scrollbar.
+  window.addEventListener("message", function (e) {
+    if (!/\.github\.io$/.test(new URL(e.origin).hostname)) return;
+    if (e.data && e.data.ccsPortalHeight) {
+      document.getElementById("ccs-staff-portal").style.height = e.data.ccsPortalHeight + "px";
+    }
+  });
+</script>

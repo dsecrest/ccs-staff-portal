@@ -1,0 +1,298 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Staff Portal · Christian Center School</title>
+  <meta name="robots" content="noindex">
+  <link rel="stylesheet" href="styles.css">
+  <script src="config.js"></script>
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <header class="site-header">
+    <p class="kicker">Christian Center School</p>
+    <h1>Staff Portal</h1>
+    <p class="lede">Apply to join our team, share recommendation letters, and complete your new-hire paperwork.</p>
+  </header>
+
+  <nav class="tabs" aria-label="Portal sections">
+    <a href="#apply">Apply</a>
+    <a href="#recommend">Recommendation Letters</a>
+    <a href="#documents">New Hire Documents</a>
+    <a href="#handbook">Employee Handbook</a>
+  </nav>
+
+  <main>
+    <!-- ============================ APPLY ============================ -->
+    <section id="apply" class="panel">
+      <p class="kicker">step one</p>
+      <h2>Employment Application</h2>
+      <p>Thank you for your interest in serving at Christian Center School. Please complete the application below and attach your resume. Fields marked <span class="req">*</span> are required.</p>
+
+      <form data-type="application" novalidate>
+        <input class="hp" type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
+
+        <fieldset>
+          <legend>Contact information</legend>
+          <div class="grid">
+            <label>First name <span class="req">*</span><input name="First name" required autocomplete="given-name"></label>
+            <label>Last name <span class="req">*</span><input name="Last name" required autocomplete="family-name"></label>
+            <label>Email <span class="req">*</span><input type="email" name="Email" required autocomplete="email"></label>
+            <label>Phone <span class="req">*</span><input type="tel" name="Phone" required autocomplete="tel"></label>
+            <label class="span-2">Street address<input name="Street address" autocomplete="street-address"></label>
+            <label>City<input name="City" autocomplete="address-level2"></label>
+            <div class="grid inner">
+              <label>State<input name="State" autocomplete="address-level1" maxlength="2"></label>
+              <label>ZIP<input name="ZIP" autocomplete="postal-code" inputmode="numeric"></label>
+            </div>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>Position</legend>
+          <div class="grid">
+            <label>Position applying for <span class="req">*</span>
+              <select name="Position" required>
+                <option value="">Choose one…</option>
+                <option>Lead Teacher</option>
+                <option>Assistant Teacher / Aide</option>
+                <option>Substitute Teacher</option>
+                <option>Office / Administrative</option>
+                <option>Before &amp; After Care</option>
+                <option>Other</option>
+              </select>
+            </label>
+            <label>Available start date<input type="date" name="Available start date"></label>
+            <label>Employment type
+              <select name="Employment type">
+                <option value="">Choose one…</option>
+                <option>Full-time</option>
+                <option>Part-time</option>
+                <option>Either</option>
+              </select>
+            </label>
+            <label>If "Other", which position?<input name="Other position"></label>
+          </div>
+          <div class="checks" role="group" aria-label="Grade levels">
+            <span class="label">Grade levels you'd like to teach</span>
+            <label><input type="checkbox" name="Grade levels" value="Preschool"> Preschool</label>
+            <label><input type="checkbox" name="Grade levels" value="Kindergarten"> Kindergarten</label>
+            <label><input type="checkbox" name="Grade levels" value="Elementary (1–5)"> Elementary (1–5)</label>
+            <label><input type="checkbox" name="Grade levels" value="Middle (6–8)"> Middle (6–8)</label>
+            <label><input type="checkbox" name="Grade levels" value="High (9–12)"> High (9–12)</label>
+          </div>
+          <label>Subjects or specialties<input name="Subjects" placeholder="e.g. Math, Music, Reading intervention"></label>
+        </fieldset>
+
+        <fieldset>
+          <legend>Education &amp; experience</legend>
+          <div class="grid">
+            <label>Highest degree earned<input name="Highest degree" placeholder="e.g. B.S. Elementary Education"></label>
+            <label>College / university<input name="College"></label>
+            <label>Teaching certification
+              <select name="Teaching certification">
+                <option value="">Choose one…</option>
+                <option>Yes — current</option>
+                <option>In progress</option>
+                <option>Expired</option>
+                <option>No</option>
+              </select>
+            </label>
+            <label>Years of teaching / childcare experience<input type="number" min="0" max="60" name="Years of experience"></label>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>Faith &amp; calling</legend>
+          <label>Home church<input name="Home church"></label>
+          <label>Briefly share your Christian testimony <span class="req">*</span><textarea name="Testimony" rows="5" required></textarea></label>
+          <label>Why would you like to teach at Christian Center School?<textarea name="Why CCS" rows="4"></textarea></label>
+        </fieldset>
+
+        <fieldset>
+          <legend>References</legend>
+          <p class="hint">Please list three people who know you professionally or spiritually (not relatives).</p>
+          <div class="refs">
+            <div class="grid ref">
+              <label>Reference 1 name <span class="req">*</span><input name="Reference 1 name" required></label>
+              <label>Relationship<input name="Reference 1 relationship"></label>
+              <label>Phone or email <span class="req">*</span><input name="Reference 1 contact" required></label>
+            </div>
+            <div class="grid ref">
+              <label>Reference 2 name<input name="Reference 2 name"></label>
+              <label>Relationship<input name="Reference 2 relationship"></label>
+              <label>Phone or email<input name="Reference 2 contact"></label>
+            </div>
+            <div class="grid ref">
+              <label>Reference 3 name<input name="Reference 3 name"></label>
+              <label>Relationship<input name="Reference 3 relationship"></label>
+              <label>Phone or email<input name="Reference 3 contact"></label>
+            </div>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>Attachments</legend>
+          <label>Resume <span class="req">*</span>
+            <input type="file" name="Resume" required accept=".pdf,.doc,.docx,.rtf,.txt,.pages">
+          </label>
+          <label>Cover letter (optional)
+            <input type="file" name="Cover letter" accept=".pdf,.doc,.docx,.rtf,.txt,.pages">
+          </label>
+          <p class="hint">PDF or Word, up to <span data-max-file></span> MB each. Recommendation letters can be sent separately in the <a href="#recommend">Recommendation Letters</a> section.</p>
+        </fieldset>
+
+        <fieldset>
+          <legend>Certification</legend>
+          <label class="check"><input type="checkbox" name="Certified true" value="Yes" required> I certify that the information in this application is true and complete to the best of my knowledge. <span class="req">*</span></label>
+          <label>Type your full name as your signature <span class="req">*</span><input name="Typed signature" required autocomplete="name"></label>
+        </fieldset>
+
+        <div class="actions">
+          <button type="submit">Submit application</button>
+          <p class="status" role="status" aria-live="polite"></p>
+        </div>
+      </form>
+      <div class="done" hidden>
+        <h3>Application received — thank you!</h3>
+        <p>We'll review your application and be in touch. If you have recommendation letters, you or your references can upload them in the <a href="#recommend">Recommendation Letters</a> section.</p>
+      </div>
+    </section>
+
+    <!-- ======================= RECOMMENDATIONS ======================= -->
+    <section id="recommend" class="panel" hidden>
+      <p class="kicker">for applicants &amp; references</p>
+      <h2>Letters of Recommendation</h2>
+      <p>Applicants or the people recommending them can upload letters here. Please enter the <strong>applicant's</strong> name and email so we can file the letter with the right application.</p>
+
+      <form data-type="recommendation" novalidate>
+        <input class="hp" type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
+        <fieldset>
+          <legend>Applicant</legend>
+          <div class="grid">
+            <label>Applicant first name <span class="req">*</span><input name="First name" required></label>
+            <label>Applicant last name <span class="req">*</span><input name="Last name" required></label>
+            <label class="span-2">Applicant email <span class="req">*</span><input type="email" name="Email" required></label>
+          </div>
+        </fieldset>
+        <fieldset>
+          <legend>Letter</legend>
+          <div class="grid">
+            <label>Recommender's name <span class="req">*</span><input name="Recommender name" required></label>
+            <label>Recommender's email or phone<input name="Recommender contact"></label>
+            <label class="span-2">Relationship to applicant<input name="Relationship" placeholder="e.g. Former principal, Pastor"></label>
+          </div>
+          <label>Letter(s) <span class="req">*</span>
+            <input type="file" name="Recommendation letter" required multiple accept=".pdf,.doc,.docx,.rtf,.txt,.pages,image/*">
+          </label>
+          <p class="hint">You can select more than one file. Up to <span data-max-file></span> MB each.</p>
+        </fieldset>
+        <div class="actions">
+          <button type="submit">Upload letter</button>
+          <p class="status" role="status" aria-live="polite"></p>
+        </div>
+      </form>
+      <div class="done" hidden>
+        <h3>Letter received — thank you!</h3>
+        <p>It has been filed with the applicant's materials.</p>
+        <button type="button" class="secondary" data-again>Upload another letter</button>
+      </div>
+    </section>
+
+    <!-- ========================= DOCUMENTS ========================== -->
+    <section id="documents" class="panel" hidden>
+      <p class="kicker">for new hires</p>
+      <h2>New Hire Documents</h2>
+      <p>Welcome to the team! Upload your hiring documents below. You'll need the <strong>access code</strong> the school office gave you. You can come back and submit more documents at any time.</p>
+      <p class="hint warn">Please do not upload tax forms or documents showing your Social Security number here — the office will collect those in person.</p>
+
+      <form data-type="newhire" novalidate>
+        <input class="hp" type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
+        <fieldset>
+          <legend>About you</legend>
+          <div class="grid">
+            <label>First name <span class="req">*</span><input name="First name" required autocomplete="given-name"></label>
+            <label>Last name <span class="req">*</span><input name="Last name" required autocomplete="family-name"></label>
+            <label>Email <span class="req">*</span><input type="email" name="Email" required autocomplete="email"></label>
+            <label>Access code <span class="req">*</span><input name="Access code" required autocomplete="off" autocapitalize="characters"></label>
+          </div>
+        </fieldset>
+        <fieldset>
+          <legend>Documents</legend>
+          <label>Document type <span class="req">*</span>
+            <select name="Document type" required>
+              <option value="">Choose one…</option>
+              <option>College transcripts</option>
+              <option>Teaching certificate / license</option>
+              <option>CPR / First Aid certification</option>
+              <option>Background check clearance</option>
+              <option>Fingerprint clearance</option>
+              <option>TB test / health form</option>
+              <option>Driver's license</option>
+              <option>Other</option>
+            </select>
+          </label>
+          <label>Notes (optional)<input name="Notes" placeholder="e.g. Expires June 2028"></label>
+          <label>File(s) <span class="req">*</span>
+            <input type="file" name="Document" required multiple accept=".pdf,.doc,.docx,image/*">
+          </label>
+          <p class="hint">A clear phone photo is fine. Up to <span data-max-file></span> MB each.</p>
+        </fieldset>
+        <div class="actions">
+          <button type="submit">Upload documents</button>
+          <p class="status" role="status" aria-live="polite"></p>
+        </div>
+      </form>
+      <div class="done" hidden>
+        <h3>Documents received — thank you!</h3>
+        <p>Have more to send? You can upload another document type now.</p>
+        <button type="button" class="secondary" data-again>Upload more documents</button>
+      </div>
+    </section>
+
+    <!-- ========================== HANDBOOK ========================== -->
+    <section id="handbook" class="panel" hidden>
+      <p class="kicker">for new hires</p>
+      <h2>Employee Handbook</h2>
+      <p>Please read the employee handbook carefully, then sign the acknowledgment below.</p>
+
+      <div class="handbook-viewer">
+        <iframe data-handbook title="Employee handbook" loading="lazy"></iframe>
+        <p class="handbook-missing" hidden>The handbook hasn't been posted yet. Please check back soon.</p>
+      </div>
+      <p class="hint"><a data-handbook-link target="_blank" rel="noopener">Open the handbook in a new tab ↗</a> (easier on phones)</p>
+
+      <form data-type="handbook" novalidate>
+        <input class="hp" type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
+        <fieldset>
+          <legend>Acknowledgment</legend>
+          <div class="grid">
+            <label>First name <span class="req">*</span><input name="First name" required autocomplete="given-name"></label>
+            <label>Last name <span class="req">*</span><input name="Last name" required autocomplete="family-name"></label>
+            <label>Email <span class="req">*</span><input type="email" name="Email" required autocomplete="email"></label>
+            <label>Access code <span class="req">*</span><input name="Access code" required autocomplete="off" autocapitalize="characters"></label>
+          </div>
+          <blockquote class="statement" data-statement>
+            I acknowledge that I have received and read the Christian Center School Employee Handbook (<span data-version></span> edition). I understand its contents and agree to abide by the policies, procedures, and standards of conduct it describes. I understand that the school may revise the handbook at any time and that it is not a contract of employment.
+          </blockquote>
+          <label class="check"><input type="checkbox" name="Agreed" value="Yes" required> I have read the handbook and agree to the statement above. <span class="req">*</span></label>
+          <div class="sig">
+            <span class="label">Sign here <span class="req">*</span></span>
+            <canvas class="sig-pad" aria-label="Signature pad — draw your signature with a finger or mouse"></canvas>
+            <button type="button" class="link" data-clear-sig>Clear signature</button>
+          </div>
+        </fieldset>
+        <div class="actions">
+          <button type="submit">Sign handbook</button>
+          <p class="status" role="status" aria-live="polite"></p>
+        </div>
+      </form>
+      <div class="done" hidden>
+        <h3>Thank you for signing!</h3>
+        <p>Your signed acknowledgment has been saved. Welcome to the Christian Center School family.</p>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
