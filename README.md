@@ -4,7 +4,7 @@ A small website for incoming staff:
 
 | Section | Who uses it | What happens |
 |---|---|---|
-| **Apply** | Anyone | Application + resume (and optional cover letter) |
+| **Apply** | Anyone | Application + resume (and optional cover letter) → a **printable PDF of the application** is saved in their folder and emailed |
 | **Recommendation Letters** | Applicants or their references | Letters filed with the applicant's folder |
 | **New Hire Documents** | New hires (access code) | Transcripts, certificates, clearances, etc. |
 | **Employee Handbook** | New hires (access code) | Read the handbook, check "I agree", draw a signature → signed PDF saved |
@@ -89,5 +89,6 @@ The application fields are plain HTML in `index.html`. Add, remove or rename an 
 
 - **Limits:** 10 MB per file and 30 MB per submission (set in `config.js`). Google's hard limit is about 50 MB.
 - **Privacy:** Keep the Drive folder shared only with the people who review applications. The new-hire page tells staff not to upload tax forms or anything with a Social Security number. Collect I-9/W-4 paperwork in person or through payroll.
+- **Application PDFs:** Every application is saved as a formatted PDF (`Application - Last, First - date.pdf`) in the applicant's Drive folder, linked in the *Application PDF* column of the sheet, and attached to the notification email, ready to print for the physical file. Its sections and labels come from the form itself, so edits to `index.html` show up in the PDF automatically.
 - **Signatures:** Each handbook signature is saved as a PDF with the statement, name, email, edition, timestamp and drawn signature, plus a row in the *Handbook Signatures* tab. That's the standard way to record handbook acknowledgments. Use a dedicated e-signature service if you ever need audit-trail-grade signing.
 - **Spam:** Each form has a hidden "honeypot" field that silently drops bot submissions.

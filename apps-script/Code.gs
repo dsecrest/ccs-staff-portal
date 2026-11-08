@@ -88,10 +88,23 @@ const HANDLERS = {
     if (!(req.files || []).some(x => x.field === 'Resume')) throw new Error('Please attach your resume.');
     const folder = personFolder_('Applicants', f);
     const links = saveFiles_(folder, req.files);
-    appendRecord_('Applications', Object.assign(stamp_(), f, links, { Folder: folder.getUrl() }));
+
+    // Printable PDF of the whole application, saved next to the resume.
+    let pdf = null, pdfUrl = '';
+    try {
+      const html = applicationHtml_(req.layout, f, req.files, new Date());
+      pdf = Utilities.newBlob(html, 'text/html', 'application.html').getAs('application/pdf')
+        .setName(clean_(`Application - ${f['Last name']}, ${f['First name']} - ${Utilities.formatDate(new Date(), Session.getScriptTimeZone(), 'yyyy-MM-dd')}.pdf`));
+      pdfUrl = folder.createFile(pdf).getUrl();
+    } catch (err) {
+      console.error('Application PDF failed', err);
+    }
+
+    appendRecord_('Applications', Object.assign(stamp_(), { 'Application PDF': pdfUrl }, f, links, { Folder: folder.getUrl() }));
     notify_(`New application: ${f['First name']} ${f['Last name']} — ${f.Position || ''}`,
-      `${f['First name']} ${f['Last name']} (${f.Email}, ${f.Phone || 'no phone'}) applied for ${f.Position || 'a position'}.`,
-      folder);
+      `${f['First name']} ${f['Last name']} (${f.Email}, ${f.Phone || 'no phone'}) applied for ${f.Position || 'a position'}.` +
+      (pdf ? '\n\nThe full application is attached as a PDF.' : ''),
+      folder, pdf ? [pdf] : []);
   },
 
   recommendation(req, f) {
@@ -162,6 +175,93 @@ const HANDLERS = {
   },
 };
 
+// ---------------------------- printable PDF ----------------------------
+
+/**
+ * Builds print-ready HTML for an application. `layout` comes from the
+ * website ([{title, names[]}] — one per form section) so the PDF follows
+ * the form automatically when fields are added or renamed.
+ */
+function applicationHtml_(layout, f, files, when) {
+  const skip = { 'Access code': 1, website: 1 };
+  const attached = {};
+  (files || []).forEach(x => (attached[x.field] = attached[x.field] || []).push(x.name));
+
+  let sections = Array.isArray(layout) && layout.length ? layout : [{ title: 'Application', names: Object.keys(f) }];
+  const listed = {};
+  sections.forEach(s => (s.names || []).forEach(n => { listed[n] = 1; }));
+  const extra = Object.keys(f).filter(n => !listed[n] && !skip[n]);
+  if (extra.length) sections = sections.concat([{ title: 'Other', names: extra }]);
+
+  const val = n => {
+    if (attached[n]) return attached[n].map(esc_).join('<br>') + ' <span class="muted">(saved in folder)</span>';
+    const v = f[n];
+    if (v === undefined || String(v).trim() === '') return '<span class="muted">—</span>';
+    const d = /^(\d{4})-(\d{2})-(\d{2})$/.exec(v);
+    if (d) return esc_(Utilities.formatDate(new Date(+d[1], d[2] - 1, +d[3]), Session.getScriptTimeZone(), 'MMMM d, yyyy'));
+    return esc_(v).replace(/\n/g, '<br>');
+  };
+
+  // "Reference 1 name / relationship / contact" → one compact table.
+  const refTable = names => {
+    const nums = [], cols = [];
+    names.forEach(n => {
+      const m = /^Reference (\d+) (.+)$/.exec(n);
+      if (nums.indexOf(m[1]) === -1) nums.push(m[1]);
+      if (cols.indexOf(m[2]) === -1) cols.push(m[2]);
+    });
+    const head = `<tr>${cols.map(c => `<td class="lbl">${esc_(c.charAt(0).toUpperCase() + c.slice(1))}</td>`).join('')}</tr>`;
+    const rows = nums
+      .filter(k => cols.some(c => String(f[`Reference ${k} ${c}`] || '').trim()))
+      .map(k => `<tr>${cols.map(c => `<td>${val(`Reference ${k} ${c}`)}</td>`).join('')}</tr>`).join('');
+    return head + rows;
+  };
+  const isLong = n => !attached[n] && String(f[n] || '').length > 70;
+
+  const body = sections.map(s => {
+    const names = (s.names || []).filter(n => !skip[n]);
+    if (!names.length) return '';
+    if (names.every(n => /^Reference \d+ .+$/.test(n))) {
+      return `<div class="sec"><h2>${esc_(s.title)}</h2><table class="grid">${refTable(names)}</table></div>`;
+    }
+    const rows = names.map(n => isLong(n)
+      ? `<tr><td colspan="2" class="lbl">${esc_(n)}</td></tr><tr><td colspan="2" class="long">${val(n)}</td></tr>`
+      : `<tr><td class="lbl">${esc_(n)}</td><td>${val(n)}</td></tr>`).join('');
+    return `<div class="sec"><h2>${esc_(s.title)}</h2><table>${rows}</table></div>`;
+  }).join('');
+
+  const tz = Session.getScriptTimeZone();
+  const name = `${f['First name'] || ''} ${f['Last name'] || ''}`.trim();
+  return `<html><head><style>
+    body { font-family: Arial, Helvetica, sans-serif; color: #181818; font-size: 11pt; margin: 0; }
+    .head { border-bottom: 3px solid #0d1d3f; padding-bottom: 10px; margin-bottom: 6px; }
+    .school { color: #3b517c; font-style: italic; font-family: Georgia, serif; font-size: 11pt; }
+    h1 { color: #0d1d3f; font-size: 20pt; margin: 2px 0 0; }
+    .sub { color: #3b517c; font-size: 10pt; margin-top: 4px; }
+    .who { font-size: 15pt; font-weight: bold; color: #0d1d3f; margin-top: 10px; }
+    .sec { page-break-inside: avoid; margin-top: 14px; }
+    h2 { font-size: 9pt; letter-spacing: 1px; text-transform: uppercase; color: #0d1d3f;
+         background: #d9e3f1; padding: 5px 8px; margin: 0; border-top: 1px solid #4684c9; }
+    table { width: 100%; border-collapse: collapse; }
+    td { padding: 5px 8px; vertical-align: top; border-bottom: 1px solid #e3e8f0; }
+    td.lbl { width: 34%; color: #5b6475; font-size: 9.5pt; }
+    table.grid td.lbl { width: auto; }
+    tr td[colspan] { border-bottom: 0; }
+    td.long { border-bottom: 1px solid #e3e8f0; padding-bottom: 8px; line-height: 1.45; }
+    .muted { color: #9aa3b2; }
+    .foot { margin-top: 18px; font-size: 8.5pt; color: #9aa3b2; border-top: 1px solid #e3e8f0; padding-top: 6px; }
+  </style></head><body>
+    <div class="head">
+      <div class="school">${esc_(SETTINGS.schoolName)}</div>
+      <h1>Employment Application</h1>
+      <div class="who">${esc_(name)}</div>
+      <div class="sub">${esc_(f.Position || '')}${f.Position ? ' · ' : ''}Submitted ${esc_(Utilities.formatDate(when, tz, "MMMM d, yyyy 'at' h:mm a"))}</div>
+    </div>
+    ${body}
+    <div class="foot">Submitted online through the ${esc_(SETTINGS.schoolName)} Staff Portal.</div>
+  </body></html>`;
+}
+
 // ------------------------------ helpers ------------------------------
 
 function checkCode_(f) {
@@ -219,12 +319,13 @@ function stamp_() {
   return { Submitted: Utilities.formatDate(new Date(), Session.getScriptTimeZone(), 'yyyy-MM-dd HH:mm') };
 }
 
-function notify_(subject, body, folder) {
+function notify_(subject, body, folder, attachments) {
   if (!SETTINGS.notifyEmail || /CHANGE-ME/.test(SETTINGS.notifyEmail)) return;
   try {
     const sheetUrl = SpreadsheetApp.openById(PROPS.getProperty('SHEET_ID')).getUrl();
     MailApp.sendEmail(SETTINGS.notifyEmail, `[Staff Portal] ${subject}`,
-      `${body}\n\nFiles: ${folder.getUrl()}\nAll submissions: ${sheetUrl}`);
+      `${body}\n\nFiles: ${folder.getUrl()}\nAll submissions: ${sheetUrl}`,
+      { attachments: attachments || [] });
   } catch (err) {
     console.error('Email failed', err);
   }

@@ -212,6 +212,16 @@
         }
         if (total > (C.maxTotalMB || 30) * MB) throw new Error("Your files add up to more than " + (C.maxTotalMB || 30) + " MB. Please send them in a few smaller batches.");
 
+        // Section titles + field order, so the server can lay out a printable PDF.
+        payload.layout = Array.prototype.map.call(form.querySelectorAll("fieldset"), function (fs) {
+          var names = [];
+          fs.querySelectorAll("[name]").forEach(function (el) {
+            if (!el.classList.contains("hp") && names.indexOf(el.name) === -1) names.push(el.name);
+          });
+          var legend = fs.querySelector("legend");
+          return { title: legend ? legend.textContent.trim() : "", names: names };
+        });
+
         if (form.dataset.type === "handbook") {
           payload.signature = pad.toBase64();
           payload.handbookVersion = C.handbookVersion || "";
